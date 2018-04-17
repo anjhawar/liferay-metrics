@@ -1,0 +1,9 @@
+
+table.health-checks-table, table.health-metrics-table {
+    border-collapse: collapse;
+}
+
+table.health-checks-table tbody tr th, table.health-checks-table tbody tr td, table.health-metrics-table tbody tr th, table.health-metrics-table tbody tr td {
+    padding: 5px;
+    border: 1px solid black;
+}

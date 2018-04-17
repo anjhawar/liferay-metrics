@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Metrics Samples
+Bundle-SymbolicName: com.liferay.metrics.samples
+Bundle-Version: 1.0.0
+

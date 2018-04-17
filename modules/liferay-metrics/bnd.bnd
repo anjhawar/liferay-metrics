@@ -1,0 +1,22 @@
+Bundle-Name: Liferay DropWizard Metrics
+Bundle-SymbolicName: com.liferay.metrics
+Bundle-Version: 1.0.0
+
+Export-Package: com.liferay.metrics,\
+  com.codahale.metrics,\
+  com.codahale.metrics.jvm,\
+  com.codahale.metrics.health,\
+  com.codahale.metrics.health.annotation,\
+  com.codahale.metrics.health.jvm,\
+  org.slf4j,org.slf4j.spi
+
+Private-Package: com.liferay.metrics.internal
+
+Import-Package: \
+   !com.sun.management,\
+   !org.joda.convert,\
+   !org.slf4j.impl,\
+   *
+
+Web-ContextPath: /liferay-metrics
+
