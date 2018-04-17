@@ -26,6 +26,8 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.SortedMap;
 
+import static com.liferay.metrics.internal.servlet.MetricsServlet.*;
+
 /**
  * class HealthCheckServlet: A health check servlet adapted from the DropWizard version to work under the OSGi
  * HTTP whiteboard.
@@ -53,29 +55,33 @@ public class HealthCheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // try to fetch the registry from the parameters
-        String registryType = ParamUtil.getString(req, "type");
-        String registryKey = ParamUtil.getString(req, "key");
+        String registryScope = ParamUtil.getString(req, PARAM_SCOPE);
+        String registryKey = ParamUtil.getString(req, PARAM_KEY);
 
         HealthCheckRegistry registry = null;
 
-        if (Validator.isNotNull(registryType)) {
-            if ("portal".equalsIgnoreCase(registryType)) {
+        if (Validator.isNotNull(registryScope)) {
+            if (SCOPE_PORTAL.equalsIgnoreCase(registryScope)) {
                 registry = _healthCheckRegistries.getPortalHealthCheckRegistry();
-            } else if ("group".equalsIgnoreCase(registryType)) {
+            } else if (SCOPE_GROUP.equalsIgnoreCase(registryScope)) {
                 long groupId = GetterUtil.getLong(registryKey);
 
                 if (groupId > 0) {
                     registry = _healthCheckRegistries.getGroupHealthCheckRegistry(groupId);
                 }
-            } else if ("company".equalsIgnoreCase(registryType)) {
+            } else if (SCOPE_COMPANY.equalsIgnoreCase(registryScope)) {
                 long companyId = GetterUtil.getLong(registryKey);
 
                 if (companyId > 0) {
                     registry = _healthCheckRegistries.getCompanyHealthCheckRegistry(companyId);
                 }
-            } else if ("custom".equalsIgnoreCase(registryType)) {
+            } else if (SCOPE_CUSTOM.equalsIgnoreCase(registryScope)) {
                 if (Validator.isNotNull(registryKey)) {
                     registry = _healthCheckRegistries.getCustomHealthCheckRegistry(registryKey);
+                }
+            } else if (SCOPE_PORTLET.equalsIgnoreCase(registryScope)) {
+                if (Validator.isNotNull(registryKey)) {
+                    registry = _healthCheckRegistries.getPortletHealthCheckRegistry(registryKey);
                 }
             }
         }

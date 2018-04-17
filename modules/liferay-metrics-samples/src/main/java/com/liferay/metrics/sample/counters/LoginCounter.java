@@ -4,6 +4,7 @@ import com.liferay.metrics.MetricRegistries;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
+import com.liferay.portal.kernel.util.Portal;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,6 +35,11 @@ public class LoginCounter extends Action {
 
         // get the portal registry, the Liferay Logins counter, and increment it.
         _metricRegistries.getPortalMetricRegistry().counter("Liferay Logins").inc();
+
+        // also take care of the company-specific logins...
+        long companyId = _portal.getCompanyId(request);
+
+        _metricRegistries.getCompanyMetricRegistry(companyId).counter("Company " + companyId + " Logins").inc();
     }
 
     @Activate
@@ -47,5 +53,11 @@ public class LoginCounter extends Action {
         _metricRegistries = metricRegistries;
     }
 
+    @Reference(unbind = "-")
+    protected void setPortal(final Portal portal) {
+        _portal = portal;
+    }
+
     private MetricRegistries _metricRegistries;
+    private Portal _portal;
 }

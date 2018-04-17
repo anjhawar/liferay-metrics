@@ -78,31 +78,44 @@ public class MetricsServlet extends HttpServlet {
         this.jsonpParamName = (String) properties.get(CALLBACK_PARAM);
     }
 
+    public static final String PARAM_SCOPE = "scope";
+    public static final String PARAM_KEY = "key";
+
+    public static final String SCOPE_PORTAL = "portal";
+    public static final String SCOPE_GROUP = "group";
+    public static final String SCOPE_COMPANY = "company";
+    public static final String SCOPE_CUSTOM = "custom";
+    public static final String SCOPE_PORTLET = "portlet";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String registryType = ParamUtil.getString(req, "type");
-        String registryKey = ParamUtil.getString(req, "key");
+        String registryScope = ParamUtil.getString(req, PARAM_SCOPE);
+        String registryKey = ParamUtil.getString(req, PARAM_KEY);
 
         MetricRegistry registry = null;
 
-        if (Validator.isNotNull(registryType)) {
-            if ("portal".equalsIgnoreCase(registryType)) {
+        if (Validator.isNotNull(registryScope)) {
+            if (SCOPE_PORTAL.equalsIgnoreCase(registryScope)) {
                 registry = _metricRegistries.getPortalMetricRegistry();
-            } else if ("group".equalsIgnoreCase(registryType)) {
+            } else if (SCOPE_GROUP.equalsIgnoreCase(registryScope)) {
                 long groupId = GetterUtil.getLong(registryKey);
 
                 if (groupId > 0) {
                     registry = _metricRegistries.getGroupMetricRegistry(groupId);
                 }
-            } else if ("company".equalsIgnoreCase(registryType)) {
+            } else if (SCOPE_COMPANY.equalsIgnoreCase(registryScope)) {
                 long companyId = GetterUtil.getLong(registryKey);
 
                 if (companyId > 0) {
                     registry = _metricRegistries.getCompanyMetricRegistry(companyId);
                 }
-            } else if ("custom".equalsIgnoreCase(registryType)) {
+            } else if (SCOPE_CUSTOM.equalsIgnoreCase(registryScope)) {
                 if (Validator.isNotNull(registryKey)) {
                     registry = _metricRegistries.getCustomMetricRegistry(registryKey);
+                }
+            } else if (SCOPE_PORTLET.equalsIgnoreCase(registryScope)) {
+                if (Validator.isNotNull(registryKey)) {
+                    registry = _metricRegistries.getPortletMetricRegistry(registryKey);
                 }
             }
         }
